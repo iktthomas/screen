@@ -38,6 +38,12 @@
 const terminal = document.getElementById("terminal");
 
 const messages = [
+"nmap scan initiated...",
+"ssh brute force attempt...",
+"dumping /etc/passwd...",
+"reading /var/log/auth.log...",
+"injecting into PID 1324...",
+"escalating privileges via sudo exploit...",
 "Intercepting encrypted traffic...",
 "Uploading data to remote server...",
 "System integrity compromised...",
@@ -103,7 +109,7 @@ const messages = [
 "OVERRIDE IN PROGRESS...",
 "SECURITY BYPASS SUCCESS...",
 "DATA BREACH CONFIRMED..."
-];
+]; // 70 stk
 
 const errors = [
 "ERROR: Access denied",
@@ -131,13 +137,58 @@ const errors = [
 "WARNING: High-risk activity flagged",
 "ALERT: Encryption mismatch",
 "CRITICAL: Unauthorized root access attempt",
-"ERROR: Network breach detected"
+"ERROR: Network breach detected",
+"FATAL: Kernel panic",
+"ERROR: Memory corruption detected",
+"CRITICAL: Stack overflow",
+"WARNING: Suspicious packet flood"
+]; // 30 stk
+
+// TYPEWRITER
+function typeLine(text, className = "") {
+  const line = document.createElement("div");
+  line.className = className;
+  terminal.appendChild(line);
+
+  let i = 0;
+  function type() {
+    line.textContent = text.substring(0, i);
+    i++;
+    if (i <= text.length) {
+      setTimeout(type, 8);
+    }
+  }
+  type();
+}
+
+// BOOT SEQUENCE
+const bootSequence = [
+"Booting secure kernel...",
+"Loading modules...",
+"Initializing network interfaces...",
+"Mounting encrypted volumes...",
+"Starting intrusion engine...",
+"Establishing secure tunnel...",
+"System ready."
 ];
 
+let bootIndex = 0;
+
+function runBoot() {
+  if (bootIndex < bootSequence.length) {
+    typeLine(`[BOOT] ${bootSequence[bootIndex]}`);
+    bootIndex++;
+    return setTimeout(runBoot, 400);
+  }
+  loop();
+}
+
+// RANDOM HEX
 function randomHex() {
   return Math.random().toString(16).substring(2, 10);
 }
 
+// PROGRESS BAR
 function createProgressBar() {
   const container = document.createElement("span");
   container.className = "progress";
@@ -157,25 +208,33 @@ function createProgressBar() {
   return container;
 }
 
+// 70/30 LOGIKK
 function randomLine() {
-  const line = document.createElement("div");
+  const isError = Math.random() < 0.3; // 30%
 
-  if (Math.random() < 0.35) {
-    line.textContent = `[${new Date().toLocaleTimeString()}] ${errors[Math.floor(Math.random()*errors.length)]}`;
-    line.className = "error";
-    return line;
+  if (isError) {
+    typeLine(
+      `[${new Date().toLocaleTimeString()}] ${errors[Math.floor(Math.random()*errors.length)]}`,
+      "error"
+    );
+    return;
   }
 
   const msg = messages[Math.floor(Math.random()*messages.length)];
-  line.textContent = `[${new Date().toLocaleTimeString()}] ${msg} ${randomHex()}`;
+  const line = `[${new Date().toLocaleTimeString()}] ${msg} ${randomHex()}`;
+
+  const container = document.createElement("div");
+  terminal.appendChild(container);
+
+  typeLine(line);
 
   if (Math.random() < 0.3) {
-    line.appendChild(createProgressBar());
+    const bar = createProgressBar();
+    container.appendChild(bar);
   }
-
-  return line;
 }
 
+// CLEANUP
 function cleanup() {
   if (terminal.children.length > 800) {
     for (let i = 0; i < 150; i++) {
@@ -184,44 +243,13 @@ function cleanup() {
   }
 }
 
+// MAIN LOOP
 function loop() {
   try {
-    const r = Math.random();
-
-    if (r < 0.15) {
-      const t = document.createElement("div");
-      t.textContent = `[${new Date().toLocaleTimeString()}] thinking...`;
-      t.className = "thinking";
-      terminal.appendChild(t);
-      cleanup();
-      window.scrollTo(0, document.body.scrollHeight);
-      return setTimeout(loop, 800 + Math.random()*1000);
-    }
-
-    if (r < 0.35) {
-      for (let i = 0; i < 12; i++) {
-        terminal.appendChild(randomLine());
-      }
-      cleanup();
-      window.scrollTo(0, document.body.scrollHeight);
-      return setTimeout(loop, 60);
-    }
-
-    if (r < 0.5) {
-      for (let i = 0; i < 20; i++) {
-        const el = document.createElement("div");
-        el.textContent = `[${new Date().toLocaleTimeString()}] ${errors[Math.floor(Math.random()*errors.length)]}`;
-        el.className = "error";
-        terminal.appendChild(el);
-      }
-      cleanup();
-      window.scrollTo(0, document.body.scrollHeight);
-      return setTimeout(loop, 80);
-    }
-
     const count = 2 + Math.floor(Math.random()*4);
+
     for (let i = 0; i < count; i++) {
-      terminal.appendChild(randomLine());
+      randomLine();
     }
 
     cleanup();
@@ -234,7 +262,8 @@ function loop() {
   }
 }
 
-setTimeout(loop, 200);
+setTimeout(runBoot, 500);
 </script>
 </body>
 </html>
+```
