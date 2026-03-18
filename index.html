@@ -2,7 +2,7 @@
 <html lang="no">
 <head>
 <meta charset="UTF-8">
-<title>v2vdhdjkdubvkd7765</title>
+<title>v23767467ffgg77</title>
 <style>
   body {
     margin: 0;
@@ -134,7 +134,7 @@ const errors = [
 "WARNING: Suspicious packet flood"
 ];
 
-// TYPEWRITER (ekte)
+// TYPEWRITER (rask + smooth)
 function typeLine(text, className = "") {
   return new Promise(resolve => {
     const line = document.createElement("div");
@@ -150,7 +150,7 @@ function typeLine(text, className = "") {
       window.scrollTo(0, document.body.scrollHeight);
 
       if (i <= text.length) {
-        setTimeout(type, 25);
+        setTimeout(type, 8 + Math.random()*8); // ⚡ raskere
       } else {
         resolve();
       }
@@ -186,7 +186,7 @@ function randomHex() {
   return Math.random().toString(16).substring(2, 10);
 }
 
-// 70/30 + WAIT
+// 70/30
 async function randomLine() {
   const isError = Math.random() < 0.3;
 
@@ -213,21 +213,39 @@ function cleanup() {
   }
 }
 
-// LOOP (kontrollert)
+// BURST MODE LOOP
 async function loop() {
   try {
-    const count = 1 + Math.floor(Math.random()*2);
+    const isBurst = Math.random() < 0.3; // 30% sjanse
+
+    if (isBurst) {
+      // 🔥 BURST: masse linjer raskt
+      const burstCount = 6 + Math.floor(Math.random()*6);
+
+      for (let i = 0; i < burstCount; i++) {
+        await randomLine();
+      }
+
+      cleanup();
+
+      // pause etter burst
+      setTimeout(loop, 400 + Math.random()*400);
+      return;
+    }
+
+    // normal flow
+    const count = 2 + Math.floor(Math.random()*3);
 
     for (let i = 0; i < count; i++) {
-      await randomLine(); // 🔥 venter
+      await randomLine();
     }
 
     cleanup();
 
-    setTimeout(loop, 200 + Math.random()*200);
+    setTimeout(loop, 80 + Math.random()*120);
 
   } catch (e) {
-    setTimeout(loop, 300);
+    setTimeout(loop, 200);
   }
 }
 
